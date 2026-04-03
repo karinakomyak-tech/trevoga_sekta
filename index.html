@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Карта тем про тревогу</title>
+  <meta name="description" content="Тревога на одной странице: двенадцать тем Брюера и практика Mapping — на сайте; заметки и аудио — мысли о работе и тревога, утро и телефон, ночь и беспокойство, день без гаджетов, стресс и движение." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f0ebe3;
+      --bg-warm: #e8e1d6;
+      --surface: #fffcf8;
+      --surface-muted: #faf6f0;
+      --border: #ddd5c8;
+      --border-light: #ece6dc;
+      --text: #1c1917;
+      --text-secondary: #44403c;
+      --muted: #78716c;
+      --accent: #b45309;
+      --accent-dark: #92400e;
+      --accent-soft: rgba(180, 83, 9, 0.12);
+      --accent-ring: rgba(180, 83, 9, 0.25);
+      --teal: #0f766e;
+      --teal-soft: rgba(15, 118, 110, 0.1);
+      --link: #0d9488;
+      --link-hover: #0f766e;
+      --shadow-sm: 0 1px 3px rgba(28, 25, 23, 0.06);
+      --shadow-md: 0 8px 30px rgba(28, 25, 23, 0.07);
+      --shadow-lg: 0 24px 60px rgba(28, 25, 23, 0.09);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 680px;
+      --nav-w: 272px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    ::selection {
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    body {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 100% 80% at 0% 0%, rgba(180, 83, 9, 0.06), transparent 55%),
+        radial-gradient(ellipse 70% 50% at 100% 10%, rgba(15, 118, 110, 0.05), transparent 50%),
+        linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: var(--nav-w) 1fr;
+      min-height: 100vh;
+    }
+
+    .content-wrap {
+      min-width: 0;
+    }
+
+    .mobile-nav-bar,
+    .toc-backdrop {
+      display: none;
+    }
+
+    .toc-toggle {
+      display: none;
+    }
+
+    @media (max-width: 920px) {
+      .layout {
+        display: block;
+      }
+
+      .mobile-nav-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.7rem 1rem;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border-light);
+        position: sticky;
+        top: 0;
+        z-index: 150;
+        box-shadow: var(--shadow-sm);
+      }
+
+      .mobile-nav-brand {
+        font-family: "Literata", Georgia, serif;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text);
+        letter-spacing: -0.02em;
+      }
+
+      .toc-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: var(--surface-muted);
+        color: var(--text-secondary);
+        font-family: inherit;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.15s, border-color 0.15s;
+      }
+
+      .toc-toggle:hover {
+        background: var(--surface);
+        border-color: var(--muted);
+      }
+
+      .toc-toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      .toc-toggle-bars {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 18px;
+      }
+
+      .toc-toggle-bars span {
+        display: block;
+        height: 2px;
+        border-radius: 1px;
+        background: var(--text-secondary);
+      }
+
+      .toc-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 180;
+        background: rgba(28, 25, 23, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.28s ease, visibility 0.28s ease;
+      }
+
+      .toc-backdrop.is-visible {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
+
+      nav.toc {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: min(300px, 88vw);
+        max-height: none;
+        z-index: 200;
+        transform: translateX(-102%);
+        transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        border-right: 1px solid var(--border-light);
+        border-bottom: none;
+        box-shadow: 8px 0 40px rgba(28, 25, 23, 0.12);
+        overflow-y: auto;
+        padding: 1rem 1.15rem 2rem;
+        background: var(--surface);
+      }
+
+      nav.toc.is-open {
+        transform: translateX(0);
+      }
+
+      .toc-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .toc-head .brand {
+        margin-bottom: 0;
+      }
+
+      .toc-toggle {
+        display: inline-flex;
+      }
+
+      .toc-close {
+        flex-shrink: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        border-radius: 10px;
+        background: var(--surface-muted);
+        color: var(--muted);
+        font-size: 1.35rem;
+        line-height: 1;
+        cursor: pointer;
+        transition: background 0.15s, color 0.15s;
+      }
+
+      .toc-close:hover {
+        background: var(--border-light);
+        color: var(--text);
+      }
+
+      .toc-close:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+
+      body.nav-drawer-open {
+        overflow: hidden;
+      }
+    }
+
+    @media (min-width: 921px) {
+      .mobile-nav-bar,
+      .toc-backdrop {
+        display: none !important;
+      }
+
+      .toc-close {
+        display: none !important;
+      }
+
+      .toc-head {
+        display: block;
+        margin-bottom: 0;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: var(--nav-w) 1fr;
+        min-height: 100vh;
+      }
+
+      nav.toc {
+        position: sticky;
+        top: 0;
+        align-self: start;
+        max-height: 100vh;
+        overflow-y: auto;
+        padding: 1.75rem 1.35rem 2.25rem;
+        border-right: 1px solid var(--border-light);
+        background: var(--surface);
+        box-shadow: 4px 0 32px rgba(28, 25, 23, 0.04);
+      }
+    }
+
+    nav.toc::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    nav.toc::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 99px;
+    }
+
+    nav.toc .brand {
+      font-family: "Literata", Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    nav.toc .tagline {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 1.35rem;
+      line-height: 1.45;
+    }
+
+    nav.toc ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav.toc li {
+      margin-bottom: 0.15rem;
+    }
+
+    nav.toc a {
+      display: block;
+      padding: 0.45rem 0.65rem;
+      border-radius: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    nav.toc a:hover {
+      color: var(--text);
+      background: var(--surface-muted);
+    }
+
+    nav.toc a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    main {
+      padding: 2.25rem 1.75rem 4.5rem;
+      max-width: calc(var(--max) + 4rem);
+    }
+
+    .hero {
+      margin-bottom: 2.75rem;
+      padding: 2rem 2rem 2.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: -40%;
+      right: -15%;
+      width: 55%;
+      height: 120%;
+      background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-family: "Literata", Georgia, serif;
+      font-size: clamp(1.85rem, 4.5vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin: 0 0 0.65rem;
+      color: var(--text);
+    }
+
+    .hero-inner h1 {
+      margin-bottom: 0;
+    }
+
+    section {
+      margin-bottom: 3.25rem;
+      scroll-margin-top: 1.25rem;
+    }
+
+    section + section {
+      border-top: 1px solid var(--border-light);
+      padding-top: 3rem;
+    }
+
+    .section-head {
+      margin-bottom: 1.15rem;
+      padding-left: 0.9rem;
+      border-left: 2px solid var(--accent);
+    }
+
+    h2 {
+      font-family: "Literata", Georgia, serif;
+      font-size: 1.28rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    h3 {
+      font-size: 0.98rem;
+      font-weight: 600;
+      margin: 1.25rem 0 0.5rem;
+      color: var(--text);
+    }
+
+    .section-intro {
+      margin: 0 0 1.1rem;
+      color: var(--muted);
+      font-size: 0.9375rem;
+    }
+
+    p {
+      margin: 0 0 0.85rem;
+      color: var(--muted);
+    }
+
+    a.ext {
+      color: var(--link);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      font-weight: 500;
+    }
+
+    a.ext:hover {
+      color: var(--link-hover);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      padding: 1.35rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      border-color: var(--border);
+    }
+
+    .card h3 {
+      margin-top: 1.25rem;
+    }
+
+    .card > h3:first-child {
+      margin-top: 0;
+    }
+
+    .card .meta {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      line-height: 1.45;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.85rem;
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.28rem 0.6rem;
+      border-radius: 999px;
+      background: var(--surface-muted);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-light);
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 1.1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(165deg, #c2410c 0%, var(--accent-dark) 100%);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(180, 83, 9, 0.28);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(180, 83, 9, 0.32);
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface-muted);
+      border-color: var(--muted);
+    }
+
+    ul.dots {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--muted);
+    }
+
+    .card ul.dots {
+      margin: 0;
+    }
+
+    ul.dots li {
+      margin-bottom: 0.55rem;
+      padding-left: 0.25rem;
+    }
+
+    ul.dots li::marker {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    ol.theses {
+      margin: 0.85rem 0 0;
+      padding: 0.85rem 1rem 0.35rem 1.85rem;
+      list-style: decimal;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      line-height: 1.58;
+      background: linear-gradient(135deg, var(--surface-muted) 0%, rgba(253, 252, 251, 0.65) 100%);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    ol.theses li {
+      margin-bottom: 0.9rem;
+      padding-left: 0.4rem;
+    }
+
+    ol.theses li:last-child {
+      margin-bottom: 0.35rem;
+    }
+
+    ol.theses li::marker {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.92em;
+    }
+
+    ol.theses li strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .theses-lead {
+      margin: 0 0 0.15rem;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      line-height: 1.5;
+    }
+
+    .flow-chain {
+      margin: 0.25rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .flow-chain li {
+      position: relative;
+      padding: 1rem 0 1rem 1.65rem;
+      border-left: 2px solid var(--border);
+      margin-left: 0.55rem;
+      color: var(--muted);
+      font-size: 0.9375rem;
+      background: linear-gradient(90deg, var(--surface-muted) 0%, transparent 100%);
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin-bottom: 0.35rem;
+    }
+
+    .flow-chain li::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 1.2rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surface);
+      box-shadow: 0 0 0 1px var(--border);
+    }
+
+    .flow-chain li strong {
+      color: var(--text);
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.35rem;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .flow-chain li .inline-strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .msg-label {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .card-emphasis {
+      color: var(--text-secondary);
+      margin-bottom: 0;
+    }
+
+    .card-emphasis strong {
+      color: var(--text);
+    }
+
+    .flow-chain code {
+      font-size: 0.88em;
+      padding: 0.12em 0.35em;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text);
+      border: 1px solid var(--border-light);
+    }
+
+    .tight-bottom {
+      margin-bottom: 0;
+    }
+
+    .audio-block {
+      margin-top: 1.15rem;
+      padding: 1.1rem 1.2rem 1.15rem;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(145deg, var(--surface-muted) 0%, var(--surface) 100%);
+      border: 1px solid var(--border-light);
+    }
+
+    .audio-block .audio-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--teal);
+      margin-bottom: 0.5rem;
+    }
+
+    .audio-block audio {
+      display: block;
+      width: 100%;
+      margin-top: 0.35rem;
+      border-radius: 999px;
+      height: 40px;
+    }
+
+    .post-title {
+      font-family: "Literata", Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 0.65rem;
+      letter-spacing: -0.02em;
+    }
+
+    .post-sub {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin: 0 0 0.35rem;
+    }
+
+    .post-sub:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .flow-intro-card .post-sub.kicker {
+      margin-bottom: 0.4rem;
+    }
+
+    .flow-intro-card .post-title {
+      margin-bottom: 0.5rem;
+    }
+
+    .flow-intro-card .deck {
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .flow-intro-card .meta.tight {
+      margin-bottom: 0.9rem;
+    }
+
+    .flow-intro-card .post-note {
+      font-size: 0.875rem;
+      margin: 0 0 0.25rem;
+      color: var(--muted);
+    }
+
+    .flow-intro-card .post-note.lead-in {
+      margin-bottom: 1rem;
+    }
+
+    .flow-intro-card .post-note.story {
+      margin-bottom: 0;
+      line-height: 1.65;
+    }
+  </style>
+</head>
+<body>
+  <div class="toc-backdrop" id="toc-backdrop" aria-hidden="true"></div>
+  <div class="layout">
+    <nav class="toc" id="site-toc" aria-label="Содержание">
+      <div class="toc-head">
+        <div class="brand">Карта тем про тревогу</div>
+        <button type="button" class="toc-close" id="toc-close" aria-label="Закрыть меню">×</button>
+      </div>
+      <div class="tagline">9 разделов: теория, практика и личный опыт.</div>
+      <ul>
+        <li><a href="#top">В начало</a></li>
+        <li><a href="#brewer-12">12 тем · теория из книги</a></li>
+        <li><a href="#mapping">Практика · Mapping</a></li>
+        <li><a href="#suitcase-work">Как мысли о работе подпитывают тревогу</a></li>
+        <li><a href="#suitcase-morning">Утро без телефона</a></li>
+        <li><a href="#suitcase-night-worry">Ночь, пауза и беспокойство</a></li>
+        <li><a href="#suitcase-detox">День без гаджетов</a></li>
+        <li><a href="#suitcase-stress">Стресс и тревога</a></li>
+        <li><a href="#suitcase-movement">Тревога и движение</a></li>
+      </ul>
+    </nav>
+
+    <div class="content-wrap">
+      <header class="mobile-nav-bar">
+        <span class="mobile-nav-brand">Карта тем про тревогу</span>
+        <button type="button" class="toc-toggle" id="toc-toggle" aria-expanded="false" aria-controls="site-toc">
+          <span class="toc-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          Содержание
+        </button>
+      </header>
+    <main id="top">
+      <header class="hero">
+        <div class="hero-inner">
+          <h1>Карта тем про тревогу</h1>
+        </div>
+      </header>
+
+      <section id="brewer-12">
+        <div class="section-head">
+          <h2>Двенадцать тем по «Unwinding Anxiety»</h2>
+        </div>
+        <p class="section-intro">Книга объёмная; здесь — коротко о том, как мозг запускает тревогу и почему она снова и снова возвращается.</p>
+        <div class="card">
+          <p class="meta">Judson Brewer — нейроучёный и психиатр; о том, как тревога работает как привычка и что с этим можно делать дальше.</p>
+          <div class="pill-row">
+            <span class="pill">маскировка симптомов</span>
+            <span class="pill">страх + неопределённость</span>
+            <span class="pill">петля привычки</span>
+            <span class="pill">сила воли и осознанность</span>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="https://olymarkes.github.io/trevoga-page/" target="_blank" rel="noopener noreferrer">Читать на сайте</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="mapping">
+        <div class="section-head">
+          <h2>Практика: Mapping — карта петель</h2>
+        </div>
+        <p class="section-intro">Первый шаг по Брюеру — различить триггер, поведение и результат. Разбор с примерами и заданием — на отдельной странице Mapping.</p>
+        <div class="card">
+          <p class="meta">Это не разовое упражнение: карту обычно ведут неделями, пока не проявятся повторяющиеся схемы.</p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="https://olymarkes.github.io/trevoga-page/01_mapping.html" target="_blank" rel="noopener noreferrer">Открыть Mapping</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="suitcase-work">
+        <div class="section-head">
+          <h2>Как мысли о работе подпитывают тревогу</h2>
+        </div>
+        <div class="card flow-intro-card">
+          <p class="post-sub kicker">Аудио · Оля</p>
+          <p class="post-sub">Что с этим можно сделать — короткий разбор в записи ниже.</p>
+          <div class="audio-block">
+            <div class="audio-label">Аудио</div>
+            <audio controls preload="metadata" src="audio-chemodanchik-rabota.m4a">
+              Ваш браузер не воспроизводит аудио. Скачайте файл: <a class="ext" href="audio-chemodanchik-rabota.m4a">audio-chemodanchik-rabota.m4a</a>
+            </audio>
+          </div>
+        </div>
+      </section>
+
+      <section id="suitcase-morning">
+        <div class="section-head">
+          <h2>Утро без телефона: петли, тело и теория Брюера</h2>
+        </div>
+        <p class="section-intro">Личный опыт в связке с идеями Брюера: о первых петлях утра, о том, как тело и мысли кормят друг друга, и почему телефон — чаще поведение в петле, а не её причина.</p>
+        <div class="card flow-intro-card">
+          <p class="post-sub kicker">Аудио · Оля</p>
+          <p class="post-sub deck">Тревога, петли привычки и утро без телефона</p>
+          <p class="meta tight">Опирается на личный опыт и на книгу Judson Brewer «Unwinding Anxiety».</p>
+          <div class="audio-block">
+            <div class="audio-label">Аудио</div>
+            <audio controls preload="metadata">
+              <source src="audio-chemodanchik-utro-telefon.ogg" type="audio/ogg" />
+              Ваш браузер не воспроизводит OGG. <a class="ext" href="audio-chemodanchik-utro-telefon.ogg">Скачать аудио</a>
+            </audio>
+          </div>
+        </div>
+        <ul class="flow-chain">
+          <li>
+            <strong>Утро и первая петля</strong>
+            Пока телефон лежит в стороне, утро часто ощущается спокойнее. Стоит зайти в экран — подтягиваются привычные триггеры (лента, задачи, неопределённость дня), и тело быстро наполняется напряжением. Это первая наблюдаемая петля: не «утро само по себе тревожное», а цепочка контакта с телефоном и привычной реакции на то, что там всплывает.
+          </li>
+          <li>
+            <strong>Петля привычки</strong>
+            У Брюера тревога — привычка, а не только «эмоция»: <span class="inline-strong">триггер → поведение → результат</span>. Например: неопределённость → руминация → ощущение, что вы хоть что-то делаете.
+          </li>
+          <li>
+            <strong>Тело и мысли</strong>
+            Замкнутый круг: мысли запускают телесные реакции, тело подкармливает новые тревожные мысли. В исследованиях осознанность давала заметное снижение тревоги за месяцы практики.
+          </li>
+          <li>
+            <strong>«Серфинг»</strong>
+            Не принимать решений из пика тревоги, а остаться с ощущением — наблюдать; со временем триггер ослабевает, проще отделить задачу от реакции.
+          </li>
+          <li>
+            <strong>Телефон</strong>
+            Телефон чаще не «причина», а поведение в петле — способ притупить тревогу. Бороться только со скроллом, не трогая тревогу, малоэффективно; при работе с тревогой нагрузка на телефон часто снижается сама.
+          </li>
+        </ul>
+      </section>
+
+      <section id="suitcase-night-worry">
+        <div class="section-head">
+          <h2>Ночь, пауза и беспокойство: это не решение задачи</h2>
+        </div>
+        <p class="section-intro">Почему трудно выдержать паузу после триггера и чем беспокойство ночью отличается от реального решения задачи.</p>
+        <div class="card">
+          <h3>Теория · пауза после триггера</h3>
+          <p>Почему так трудно не уйти сразу в прокрутку мыслей после триггера — в духе подхода Брюера и работы Mindfulness Center при Brown University.</p>
+          <p class="post-sub kicker">Аудио · Оля</p>
+          <p class="post-note lead-in">Просыпание ночью, тревога и тело, которое не отпускает, пока крутится «ответственная» задача.</p>
+          <p class="post-note story">Буквально несколько дней назад я проснулась среди ночи от мысли: с кем мы сегодня снимаем. У нас идут съёмки буткэмпа — для меня это ответственная задача. И мой мозг в три часа ночи вдруг вспомнил, что меня поставили в несколько блоков подряд, а я не до конца восстановилась.</p>
+          <div class="audio-block">
+            <div class="audio-label">Аудио</div>
+            <audio controls preload="metadata" src="audio-chemodanchik-noch-syomki.m4a">
+              <a class="ext" href="audio-chemodanchik-noch-syomki.m4a">Скачать аудио</a>
+            </audio>
+          </div>
+          <h3>Практика · ночью</h3>
+          <p class="theses-lead">Цель — снизить ночную прокрутку мыслей, отложить решение задачи на утро и отличать тревожное беспокойство от реальной работы над проблемой.</p>
+          <ol class="theses">
+            <li><strong>Ключевая мысль.</strong> Беспокойство ночью — не то же самое, что решение задачи: мозг репетирует угрозы, сон страдает. Петля выглядит так: задача → руминация → сильнее тревога.</li>
+            <li><strong>Стратегия «разберём утром».</strong> Разрешить себе отложить задачу — не капитуляция, а способ дать нервной системе отдохнуть.</li>
+            <li><strong>Ночь и мозг.</strong> Ночью префронтальная кора слабее, миндалина активнее; пометка «это руминация, не решение» подключает рациональность.</li>
+            <li><strong>Что помогает.</strong> Назвать процесс, разрешить себе решить завтра, вернуть внимание к телу — дыхание, одеяло, опора.</li>
+            <li><strong>Итог.</strong> Ночная тревога часто маскируется под ощущение «я хоть что-то делаю» — и даёт иллюзию контроля, не решая задачу. Следующий раздел — про день без гаджетов; в основе — идеи из «Unwinding Anxiety» Брюера.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="suitcase-detox">
+        <div class="section-head">
+          <h2>День без гаджетов: план и наблюдение за собой</h2>
+        </div>
+        <p class="section-intro">Как подойти к дню без экранов не как к подвигу, а как к эксперименту: с чего начать, на что обратить внимание, где обсудить опыт.</p>
+        <div class="card">
+          <h3>Как спланировать</h3>
+          <p>Начать с малого: книга, ручка, блокнот; по возможности — «проводник», который поможет ориентироваться без навигатора в телефоне.</p>
+          <h3>Глубина дня</h3>
+          <p>Забота о себе, встречи поглубже, более спокойный темп: проснуться без ленты, смотреть вокруг, по желанию записывать скуку и раздражение — это тоже данные.</p>
+          <h3>Сообщество</h3>
+          <p class="card-emphasis tight-bottom"><strong>Обсуждение в Telegram:</strong> <a class="ext" href="https://t.me/+brXquvjJmOcyMTli" target="_blank" rel="noopener noreferrer">https://t.me/+brXquvjJmOcyMTli</a></p>
+        </div>
+      </section>
+
+      <section id="suitcase-stress">
+        <div class="section-head">
+          <h2>Стресс и тревога: как отличить</h2>
+        </div>
+        <p class="section-intro">Кратко по Julie Smith: как отличить стресс от тревоги и куда смотреть — нагрузка, восстановление, следующий шаг.</p>
+        <div class="card">
+        <ul class="dots">
+          <li><strong class="msg-label">Различение.</strong> Стресс — ответ на реальную нагрузку, часто даёт фокус и ослабевает, когда задача закрыта. Тревога — про гипотетическую угрозу, пережёвывание мыслей, избегание; не обязательно отпускает вместе с «я всё сделал».</li>
+          <li><strong class="msg-label">Руминация.</strong> Руминация может казаться делом, но часто это «ложная продуктивность». Ориентир: напряжение привело к шагам и заметно отпустило — ближе к стрессу как к топливу. Прокрастинация, бесконечные перепроверки, катастрофы в голове — чаще про тревогу. Стратегия: меньше избегания, больше маленьких действий, возврат к телу и к фактам.</li>
+          <li><strong class="msg-label">Стресс.</strong> Стресс сам по себе не «враг»: краткий мобилизует. Длинный, без восстановления, бьёт по сну, концентрации и телу.</li>
+          <li><strong class="msg-label">Рычаги.</strong> Три направления: снизить нагрузку, добавить восстановление, вернуть ощущение контроля через один конкретный следующий шаг. Быстрый вопрос после задачи: стало легче — скорее стресс; нет — возможно, тревога или руминация.</li>
+        </ul>
+        </div>
+      </section>
+
+      <section id="suitcase-movement">
+        <div class="section-head">
+          <h2>Тревога и движение: зачем телу нагрузка</h2>
+        </div>
+        <p class="section-intro">Зачем при тревоге помогает движение — в связке с идеями Kelly McGonigal и Julie Smith и с логикой «замкнуть цикл», о которой пишет Брюер.</p>
+        <div class="card flow-intro-card">
+          <p class="post-sub kicker">Аудио · Оля</p>
+          <p class="post-sub deck">Коротко о том, зачем телу активность, когда крутится тревога.</p>
+          <div class="audio-block">
+            <div class="audio-label">Аудио</div>
+            <audio controls preload="metadata">
+              <source src="audio-trevoga-dvizhenie.ogg" type="audio/ogg" />
+              Ваш браузер не воспроизводит OGG. <a class="ext" href="audio-trevoga-dvizhenie.ogg">Скачать аудио</a>
+            </audio>
+          </div>
+        </div>
+        <ul class="flow-chain">
+          <li>
+            <strong>Теория</strong>
+            Опора на Kelly McGonigal и логику Брюера: движение сжигает гормоны стресса, даёт сигнал мозгу «я справляюсь», снимает застойное напряжение. Тревога готовит к действию — движение закрывает цикл.
+          </li>
+          <li>
+            <strong>Практика (Julie Smith)</strong>
+            Без физического действия гормоны остаются в крови. Варианты: быстрая ходьба 10–15 минут, бег, танцы, прыжки, активная уборка.
+          </li>
+          <li>
+            <strong>Смысл</strong>
+            Тревога утверждает «опасно»; движение помогает телу доказать обратное.
+          </li>
+        </ul>
+      </section>
+
+    </main>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var nav = document.getElementById("site-toc");
+      var toggle = document.getElementById("toc-toggle");
+      var closeBtn = document.getElementById("toc-close");
+      var backdrop = document.getElementById("toc-backdrop");
+      if (!nav || !toggle || !closeBtn || !backdrop) return;
+
+      var mq = window.matchMedia("(max-width: 920px)");
+      function isMobile() {
+        return mq.matches;
+      }
+
+      function openNav() {
+        if (!isMobile()) return;
+        nav.classList.add("is-open");
+        backdrop.classList.add("is-visible");
+        backdrop.setAttribute("aria-hidden", "false");
+        document.body.classList.add("nav-drawer-open");
+        toggle.setAttribute("aria-expanded", "true");
+      }
+
+      function closeNav() {
+        nav.classList.remove("is-open");
+        backdrop.classList.remove("is-visible");
+        backdrop.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("nav-drawer-open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+
+      function onToggle() {
+        if (nav.classList.contains("is-open")) closeNav();
+        else openNav();
+      }
+
+      toggle.addEventListener("click", onToggle);
+      closeBtn.addEventListener("click", closeNav);
+      backdrop.addEventListener("click", closeNav);
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && nav.classList.contains("is-open")) {
+          closeNav();
+          toggle.focus();
+        }
+      });
+
+      if (mq.addEventListener) {
+        mq.addEventListener("change", function () {
+          if (!isMobile()) closeNav();
+        });
+      } else if (mq.addListener) {
+        mq.addListener(function () {
+          if (!isMobile()) closeNav();
+        });
+      }
+
+      nav.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener("click", function () {
+          if (isMobile()) closeNav();
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
